@@ -54,7 +54,7 @@ export const BurgerIngredients = ({
       <main className="custom-scroll">
         <div className={styles.menu_section}>
           <header className="text text_type_main-medium">Булки</header>
-          <div className={styles.menu_section_block}>
+          <ol className={styles.menu_section_block}>
             {buns.map((bun) => (
               <li key={bun._id}>
                 <img src={bun.image} alt={bun.name} />
@@ -66,12 +66,12 @@ export const BurgerIngredients = ({
                 <span>{bun.name}</span>
               </li>
             ))}
-          </div>
+          </ol>
         </div>
 
         <div className={styles.menu_section}>
           <header className="text text_type_main-medium">Соусы</header>
-          <div className={styles.menu_section_block}>
+          <ol className={styles.menu_section_block}>
             {sauces.map((sauce) => (
               <li key={sauce._id}>
                 <img src={sauce.image} alt={sauce.name} />
@@ -83,12 +83,12 @@ export const BurgerIngredients = ({
                 <span>{sauce.name}</span>
               </li>
             ))}
-          </div>
+          </ol>
         </div>
 
         <div className={styles.menu_section}>
           <header className="text text_type_main-medium">Начинки</header>
-          <div className={styles.menu_section_block}>
+          <ol className={styles.menu_section_block}>
             {mains.map((main) => (
               <li key={main._id}>
                 <img src={main.image} alt={main.name} />
@@ -100,7 +100,7 @@ export const BurgerIngredients = ({
                 <span>{main.name}</span>
               </li>
             ))}
-          </div>
+          </ol>
         </div>
       </main>
     </section>
