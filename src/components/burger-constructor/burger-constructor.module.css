@@ -5,3 +5,13 @@
   padding-bottom: 20px;
   color: var(--text-primary-color);
 }
+
+.burger_constructor div {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+}
+
+.burger_constructor_list {
+  padding: 4px 6px;
+  list-style: none;
+}
