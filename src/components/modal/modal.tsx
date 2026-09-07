@@ -8,7 +8,7 @@ import styles from './modal.module.css';
 
 type ModalProps = {
   children: React.ReactNode;
-  header: string;
+  header: string | null;
   onClose: () => void;
 };
 
