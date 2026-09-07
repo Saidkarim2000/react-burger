@@ -39,7 +39,7 @@ function Modal({ children, header, onClose }: ModalProps): React.JSX.Element | n
       <ModalOverlay onClose={onClose} />
       <div className={styles.modal}>
         <div className={styles.modal_header}>
-          <h2>{header}</h2>
+          <h1>{header}</h1>
           <CloseIcon type="primary" className={styles.close_btn} onClick={onClose} />
         </div>
         {children}
