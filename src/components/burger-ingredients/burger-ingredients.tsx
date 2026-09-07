@@ -1,8 +1,8 @@
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 
+import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
 
 import type { TIngredient } from '@utils/types';
 
@@ -120,7 +120,7 @@ export const BurgerIngredients = ({
 
       {selectedIngredient && (
         <Modal header="Детали ингредиента" onClose={handleModalClose}>
-          <OrderDetails props={selectedIngredient} />
+          <IngredientDetails props={selectedIngredient} />
         </Modal>
       )}
     </>

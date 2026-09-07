@@ -1,12 +1,12 @@
 import type { TIngredient } from '@/utils/types';
 
-import styles from './order-details.module.css';
+import styles from './ingredient-details.module.css';
 
-type OrderDetailsProps = {
+type IngredientDetailsProps = {
   props: TIngredient;
 };
 
-function OrderDetails({ props }: OrderDetailsProps): React.JSX.Element {
+function IngredientDetails({ props }: IngredientDetailsProps): React.JSX.Element {
   const { image_large, name, calories, proteins, fat, carbohydrates } = props;
 
   return (
@@ -41,4 +41,4 @@ function OrderDetails({ props }: OrderDetailsProps): React.JSX.Element {
   );
 }
 
-export default OrderDetails;
+export default IngredientDetails;
