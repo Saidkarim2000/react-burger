@@ -2,6 +2,7 @@ import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-com
 import { useState } from 'react';
 
 import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
 
 import type { TIngredient } from '@utils/types';
 
@@ -119,28 +120,7 @@ export const BurgerIngredients = ({
 
       {selectedIngredient && (
         <Modal header="Детали ингредиента" onClose={handleModalClose}>
-          <div>
-            <img src={selectedIngredient.image_large} alt={selectedIngredient.name} />
-            <h2>{selectedIngredient.name}</h2>
-            <p>
-              Тип: <span>{selectedIngredient.type}</span>
-            </p>
-            <p>
-              Цена: <span>{selectedIngredient.price}</span>
-            </p>
-            <p>
-              Белки: <span>{selectedIngredient.proteins}</span>
-            </p>
-            <p>
-              Жиры: <span>{selectedIngredient.fat}</span>
-            </p>
-            <p>
-              Углеводы: <span>{selectedIngredient.carbohydrates}</span>
-            </p>
-            <p>
-              Калории: <span>{selectedIngredient.calories}</span>
-            </p>
-          </div>
+          <OrderDetails props={selectedIngredient} />
         </Modal>
       )}
     </>

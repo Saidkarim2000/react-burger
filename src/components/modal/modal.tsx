@@ -1,3 +1,5 @@
+import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
@@ -11,6 +13,20 @@ type ModalProps = {
 };
 
 function Modal({ children, header, onClose }: ModalProps): React.JSX.Element | null {
+  useEffect(() => {
+    function handleEscapeKey(event: KeyboardEvent): void {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    }
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return (): void => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [onClose]);
+
   const modalRoot = document.getElementById('modal');
 
   if (!modalRoot) {
@@ -24,9 +40,7 @@ function Modal({ children, header, onClose }: ModalProps): React.JSX.Element | n
       <div className={styles.modal}>
         <div className={styles.modal_header}>
           <h2>{header}</h2>
-          <button type="button" onClick={onClose}>
-            Закрыть
-          </button>
+          <CloseIcon type="primary" className={styles.close_btn} onClick={onClose} />
         </div>
         {children}
       </div>

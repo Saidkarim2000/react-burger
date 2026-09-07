@@ -34,6 +34,7 @@
 
 .menu_section_block li {
   position: relative;
+  cursor: pointer;
 }
 
 .menu_item_price {
