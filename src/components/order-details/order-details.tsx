@@ -11,15 +11,12 @@ type OrderDetailsProps = {
 function OrderDetails({ id, text, note }: OrderDetailsProps): React.JSX.Element {
   return (
     <div className={styles.main}>
-      <h1 style={{ fontSize: '70px' }} className="text text_type_digits-default">
-        {id}
-      </h1>
-      <p style={{ fontSize: '14px' }}>идентификатор заказа</p>
+      <h1 className={`${styles.order_id} text text_type_digits-default`}>{id}</h1>
+      <p className={styles.order_id_label}>идентификатор заказа</p>
       <CheckMarkIcon className={styles.checkMarkIcon} type="secondary" />
-      <small style={{ fontSize: '12px' }}>{text}</small>
+      <small className={styles.order_text}>{text}</small>
       <span
-        style={{ fontSize: '12px' }}
-        className="text text_type_main-default text_color_inactive"
+        className={`${styles.order_note} text text_type_main-default text_color_inactive`}
       >
         {note}
       </span>

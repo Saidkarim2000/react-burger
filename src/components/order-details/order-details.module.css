@@ -10,3 +10,15 @@
 .checkMarkIcon {
   font-size: 50px;
 }
+
+.order_id {
+  font-size: 70px;
+}
+
+.order_id_label {
+  font-size: 14px;
+}
+
+.order_text .order_note {
+  font-size: 12px;
+}
