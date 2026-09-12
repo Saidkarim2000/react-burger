@@ -6,10 +6,40 @@
   font-family: 'Jet Brains Mono', serif;
 }
 
+.burger_ingredients main {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+}
+
 .menu {
   display: flex;
   margin: 0;
   padding: 0;
   text-align: center;
   list-style-type: none;
+}
+
+.menu_section {
+  margin: 14px auto 40px;
+}
+
+.menu_section_block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 4px auto;
+  padding: 8px;
+  list-style: none;
+}
+
+.menu_section_block li {
+  position: relative;
+  cursor: pointer;
+}
+
+.menu_item_price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }

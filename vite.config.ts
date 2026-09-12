@@ -26,6 +26,8 @@ export default defineConfig({
     setupFiles: ['./vitest-setup.ts'],
   },
   server: {
+    host: '127.0.0.1',
+    port: 43210,
     open: true,
   },
 });
