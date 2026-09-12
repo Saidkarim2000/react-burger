@@ -66,7 +66,7 @@ export const BurgerIngredients = ({
 
         <main className="custom-scroll">
           <div className={styles.menu_section}>
-            <header className="text text_type_main-medium">Булки</header>
+            <h2 className="text text_type_main-medium">Булки</h2>
             <ol className={styles.menu_section_block}>
               {buns.map((bun) => (
                 <li key={bun._id} onClick={() => handleIngredientClick(bun)}>
@@ -83,7 +83,7 @@ export const BurgerIngredients = ({
           </div>
 
           <div className={styles.menu_section}>
-            <header className="text text_type_main-medium">Соусы</header>
+            <h2 className="text text_type_main-medium">Соусы</h2>
             <ol className={styles.menu_section_block}>
               {sauces.map((sauce) => (
                 <li key={sauce._id} onClick={() => handleIngredientClick(sauce)}>
@@ -100,7 +100,7 @@ export const BurgerIngredients = ({
           </div>
 
           <div className={styles.menu_section}>
-            <header className="text text_type_main-medium">Начинки</header>
+            <h2 className="text text_type_main-medium">Начинки</h2>
             <ol className={styles.menu_section_block}>
               {mains.map((main) => (
                 <li key={main._id} onClick={() => handleIngredientClick(main)}>

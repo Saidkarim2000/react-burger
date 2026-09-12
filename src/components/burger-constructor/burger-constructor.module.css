@@ -16,3 +16,11 @@
   padding: 4px 6px;
   list-style: none;
 }
+
+.orderBtnDiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 8px;
+}
