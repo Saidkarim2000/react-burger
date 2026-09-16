@@ -27,9 +27,7 @@ export const App = (): React.JSX.Element => {
     })
       .then((resp) => resp.json() as Promise<TIngredientsResponse>)
       .then((resp) => setResult(resp.data))
-      .catch((error) => {
-        console.error(error);
-      })
+      .catch(console.error)
       .finally(() => {
         setIsLoading(false);
       });
