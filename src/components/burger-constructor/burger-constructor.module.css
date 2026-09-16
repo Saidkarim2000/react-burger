@@ -7,20 +7,42 @@
   color: var(--text-primary-color);
 }
 
-.burger_constructor div {
-  max-height: calc(100vh - 400px);
-  overflow-y: auto;
+.fixed_element {
+  padding-left: 32px;
 }
 
-.burger_constructor_list {
-  padding: 4px 6px;
+.ingredients_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 500px);
+  margin: 16px 0;
+  padding: 0 8px 0 0;
+  overflow-y: auto;
   list-style: none;
 }
 
-.orderBtnDiv {
+.ingredient_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredient_item > div:last-child {
+  flex-grow: 1;
+}
+
+.order {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 8px;
+  gap: 40px;
+  margin-top: 40px;
+  padding-right: 16px;
+}
+
+.total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

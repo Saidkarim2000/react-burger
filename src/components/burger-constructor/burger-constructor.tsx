@@ -1,4 +1,9 @@
-import { Button, ConstructorElement } from '@krgaa/react-developer-burger-ui-components';
+import {
+  Button,
+  ConstructorElement,
+  CurrencyIcon,
+  DragIcon,
+} from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 
 import Modal from '../modal/modal';
@@ -18,6 +23,13 @@ export const BurgerConstructor = ({
   console.log(ingredients);
 
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const bun = ingredients.find((ingredient) => ingredient.type === 'bun');
+
+  const fillings = ingredients.filter((ingredient) => ingredient.type !== 'bun');
+
+  const totalPrice =
+    fillings.reduce((sum, ingredient) => sum + ingredient.price, 0) +
+    (bun ? bun.price * 2 : 0);
 
   function handleOrderDetails(): void {
     setShowOrderDetails(!showOrderDetails);
@@ -29,27 +41,58 @@ export const BurgerConstructor = ({
 
   return (
     <section className={styles.burger_constructor}>
-      <div className="custom-scroll">
-        <ul>
-          {ingredients.map((ingredient) => (
-            <li key={ingredient._id} className={styles.burger_constructor_list}>
-              <ConstructorElement
-                isLocked={true}
-                price={ingredient.price}
-                text={ingredient.name}
-                thumbnail={ingredient.image}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+      {bun && (
+        <div className={styles.fixed_element}>
+          <ConstructorElement
+            type="top"
+            isLocked
+            price={bun.price}
+            text={`${bun.name} (верх)`}
+            thumbnail={bun.image}
+          />
+        </div>
+      )}
 
-      <div className={styles.orderBtnDiv}>
+      <ul className={`${styles.ingredients_list} custom-scroll`}>
+        {fillings.map((ingredient, index) => (
+          <li key={`${ingredient._id}-${index}`} className={styles.ingredient_item}>
+            <DragIcon type="primary" />
+
+            <ConstructorElement
+              price={ingredient.price}
+              text={ingredient.name}
+              thumbnail={ingredient.image}
+              handleClose={() => {
+                console.log('Удалить:', ingredient.name);
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+
+      {bun && (
+        <div className={styles.fixed_element}>
+          <ConstructorElement
+            type="bottom"
+            isLocked
+            price={bun.price}
+            text={`${bun.name} (низ)`}
+            thumbnail={bun.image}
+          />
+        </div>
+      )}
+
+      <div className={styles.order}>
+        <div className={styles.total}>
+          <span className="text text_type_digits-medium">{totalPrice}</span>
+          <CurrencyIcon type="primary" />
+        </div>
+
         <Button
           type="primary"
           size="large"
           onClick={handleOrderDetails}
-          htmlType={'button'}
+          htmlType="button"
         >
           Оформить заказ
         </Button>
