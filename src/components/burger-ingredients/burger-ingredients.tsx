@@ -1,5 +1,5 @@
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
@@ -16,6 +16,12 @@ export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
   const [selectedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
+  const [currentTab, setCurrentTab] = useState('bun');
+
+  const containerRef = useRef<HTMLElement>(null);
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
 
   function handleIngredientClick(ingredient: TIngredient): void {
     setSelectedIngredient(ingredient);
@@ -23,6 +29,37 @@ export const BurgerIngredients = ({
 
   function handleModalClose(): void {
     setSelectedIngredient(null);
+  }
+
+  function handleScroll(): void {
+    if (
+      !containerRef.current ||
+      !bunRef.current ||
+      !sauceRef.current ||
+      !mainRef.current
+    ) {
+      return;
+    }
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const bunRect = bunRef.current.getBoundingClientRect();
+    const sauceRect = sauceRef.current.getBoundingClientRect();
+    const mainRect = mainRef.current.getBoundingClientRect();
+
+    const bunDistance = Math.abs(bunRect.top - containerRect.top);
+    const sauceDistance = Math.abs(sauceRect.top - containerRect.top);
+    const mainDistance = Math.abs(mainRect.top - containerRect.top);
+
+    const minDistance = Math.min(bunDistance, sauceDistance, mainDistance);
+    console.log(minDistance);
+
+    if (minDistance === bunDistance) {
+      setCurrentTab('bun');
+    } else if (minDistance === sauceDistance) {
+      setCurrentTab('sauce');
+    } else {
+      setCurrentTab('main');
+    }
   }
 
   const buns = ingredients.filter((ingredient) => ingredient.type === 'bun');
@@ -36,7 +73,7 @@ export const BurgerIngredients = ({
           <ul className={styles.menu}>
             <Tab
               value="bun"
-              active={true}
+              active={currentTab === 'bun'}
               onClick={() => {
                 /* TODO */
               }}
@@ -45,7 +82,7 @@ export const BurgerIngredients = ({
             </Tab>
             <Tab
               value="main"
-              active={false}
+              active={currentTab === 'main'}
               onClick={() => {
                 /* TODO */
               }}
@@ -54,7 +91,7 @@ export const BurgerIngredients = ({
             </Tab>
             <Tab
               value="sauce"
-              active={false}
+              active={currentTab === 'sauce'}
               onClick={() => {
                 /* TODO */
               }}
@@ -64,10 +101,12 @@ export const BurgerIngredients = ({
           </ul>
         </nav>
 
-        <main className="custom-scroll">
+        <main ref={containerRef} className="custom-scroll" onScroll={handleScroll}>
           <div className={styles.menu_section}>
-            <h2 className="text text_type_main-medium">Булки</h2>
-            <ol className={styles.menu_section_block}>
+            <h2 ref={bunRef} className="text text_type_main-medium">
+              Булки
+            </h2>
+            <ul className={styles.menu_section_block}>
               {buns.map((bun) => (
                 <li key={bun._id} onClick={() => handleIngredientClick(bun)}>
                   <img src={bun.image} alt={bun.name} />
@@ -79,29 +118,14 @@ export const BurgerIngredients = ({
                   <span>{bun.name}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
 
           <div className={styles.menu_section}>
-            <h2 className="text text_type_main-medium">Соусы</h2>
-            <ol className={styles.menu_section_block}>
-              {sauces.map((sauce) => (
-                <li key={sauce._id} onClick={() => handleIngredientClick(sauce)}>
-                  <img src={sauce.image} alt={sauce.name} />
-                  <Counter count={1} size="default" extraClass="" />
-                  <div className={styles.menu_item_price}>
-                    <h3 className="text text_type_main-default">{sauce.price}</h3>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <span>{sauce.name}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className={styles.menu_section}>
-            <h2 className="text text_type_main-medium">Начинки</h2>
-            <ol className={styles.menu_section_block}>
+            <h2 ref={mainRef} className="text text_type_main-medium">
+              Начинки
+            </h2>
+            <ul className={styles.menu_section_block}>
               {mains.map((main) => (
                 <li key={main._id} onClick={() => handleIngredientClick(main)}>
                   <img src={main.image} alt={main.name} />
@@ -113,7 +137,26 @@ export const BurgerIngredients = ({
                   <span>{main.name}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
+          </div>
+
+          <div className={styles.menu_section}>
+            <h2 ref={sauceRef} className="text text_type_main-medium">
+              Соусы
+            </h2>
+            <ul className={styles.menu_section_block}>
+              {sauces.map((sauce) => (
+                <li key={sauce._id} onClick={() => handleIngredientClick(sauce)}>
+                  <img src={sauce.image} alt={sauce.name} />
+                  <Counter count={1} size="default" extraClass="" />
+                  <div className={styles.menu_item_price}>
+                    <h3 className="text text_type_main-default">{sauce.price}</h3>
+                    <CurrencyIcon type="primary" />
+                  </div>
+                  <span>{sauce.name}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </main>
       </section>
