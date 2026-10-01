@@ -14,7 +14,7 @@ export const burgerIngredientsApi = createApi({
     baseUrl: API.url,
   }),
   endpoints: (builder) => ({
-    getIngredients: builder.query({
+    getIngredients: builder.query<TIngredient[], void>({
       query: () => ({
         url: '/ingredients',
       }),
