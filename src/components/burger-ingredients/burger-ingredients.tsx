@@ -37,6 +37,19 @@ export const BurgerIngredients = ({
     dispatch(clearSelectedIngredient());
   }
 
+  function handleTabClick(tab: 'bun' | 'main' | 'sauce'): void {
+    const tabRefs = {
+      bun: bunRef,
+      main: mainRef,
+      sauce: sauceRef,
+    };
+
+    tabRefs[tab].current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
   function handleScroll(): void {
     if (
       !containerRef.current ||
@@ -81,7 +94,7 @@ export const BurgerIngredients = ({
               value="bun"
               active={currentTab === 'bun'}
               onClick={() => {
-                /* TODO */
+                handleTabClick('bun');
               }}
             >
               Булки
@@ -90,7 +103,7 @@ export const BurgerIngredients = ({
               value="main"
               active={currentTab === 'main'}
               onClick={() => {
-                /* TODO */
+                handleTabClick('main');
               }}
             >
               Начинки
@@ -99,7 +112,7 @@ export const BurgerIngredients = ({
               value="sauce"
               active={currentTab === 'sauce'}
               onClick={() => {
-                /* TODO */
+                handleTabClick('sauce');
               }}
             >
               Соусы

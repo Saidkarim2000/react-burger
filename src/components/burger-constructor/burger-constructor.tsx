@@ -44,10 +44,13 @@ export const BurgerConstructor = ({
       bun._id,
     ];
 
+    console.log('ingredientIds: \n', ingredientIds);
+
     try {
       const response = await createOrder({
         ingredients: ingredientIds,
       }).unwrap();
+      console.log('response: \n', response);
 
       setOrderNumber(response.order.number);
     } catch (err) {
@@ -116,7 +119,7 @@ export const BurgerConstructor = ({
         <Button
           type="primary"
           size="large"
-          onClick={() => handleOrderDetails}
+          onClick={() => void handleOrderDetails()}
           htmlType="button"
           disabled={!bun || isLoading}
         >
