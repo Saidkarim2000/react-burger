@@ -8,6 +8,18 @@ type TIngredientsResponse = {
   data: TIngredient[];
 };
 
+type TCreateOrderRequest = {
+  ingredients: string[];
+};
+
+type TCreateOrderResponse = {
+  name: string;
+  order: {
+    number: number;
+  };
+  success: boolean;
+};
+
 export const burgerIngredientsApi = createApi({
   reducerPath: 'burgerIngredientsApi',
   baseQuery: fetchBaseQuery({
@@ -20,7 +32,14 @@ export const burgerIngredientsApi = createApi({
       }),
       transformResponse: (response: TIngredientsResponse) => response.data,
     }),
+    createOrder: builder.mutation<TCreateOrderResponse, TCreateOrderRequest>({
+      query: (ingredients) => ({
+        url: '/orders',
+        method: 'POST',
+        body: ingredients,
+      }),
+    }),
   }),
 });
 
-export const { useGetIngredientsQuery } = burgerIngredientsApi;
+export const { useGetIngredientsQuery, useCreateOrderMutation } = burgerIngredientsApi;

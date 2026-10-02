@@ -1,3 +1,4 @@
+import { useCreateOrderMutation } from '@/utils/api/api';
 import {
   Button,
   ConstructorElement,
@@ -22,7 +23,8 @@ export const BurgerConstructor = ({
 }: TBurgerConstructorProps): React.JSX.Element => {
   console.log(ingredients);
 
-  const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [orderNumber, setOrderNumber] = useState<number | null>(null);
+  const [createOrder, { isLoading, isError }] = useCreateOrderMutation();
   const bun = ingredients.find((ingredient) => ingredient.type === 'bun');
 
   const fillings = ingredients.filter((ingredient) => ingredient.type !== 'bun');
@@ -31,12 +33,30 @@ export const BurgerConstructor = ({
     fillings.reduce((sum, ingredient) => sum + ingredient.price, 0) +
     (bun ? bun.price * 2 : 0);
 
-  function handleOrderDetails(): void {
-    setShowOrderDetails(!showOrderDetails);
+  async function handleOrderDetails(): Promise<void> {
+    if (!bun || isLoading) {
+      return;
+    }
+
+    const ingredientIds = [
+      bun._id,
+      ...fillings.map((ingredient) => ingredient._id),
+      bun._id,
+    ];
+
+    try {
+      const response = await createOrder({
+        ingredients: ingredientIds,
+      }).unwrap();
+
+      setOrderNumber(response.order.number);
+    } catch (err) {
+      console.error('Ошибка при создании заказа: ', err);
+    }
   }
 
   function handleOrderDetailsClose(): void {
-    setShowOrderDetails(false);
+    setOrderNumber(null);
   }
 
   return (
@@ -88,20 +108,26 @@ export const BurgerConstructor = ({
           <CurrencyIcon type="primary" />
         </div>
 
+        {isError && (
+          <p className="text text_type_main_default">
+            Во время оформления заказа произошла ошибка. Попробуйте еще раз.
+          </p>
+        )}
         <Button
           type="primary"
           size="large"
-          onClick={handleOrderDetails}
+          onClick={() => handleOrderDetails}
           htmlType="button"
+          disabled={!bun || isLoading}
         >
-          Оформить заказ
+          {isLoading ? 'В процессе...' : 'Оформить заказ'}
         </Button>
       </div>
 
-      {showOrderDetails && (
+      {orderNumber !== null && (
         <Modal header="Детали заказа" onClose={handleOrderDetailsClose}>
           <OrderDetails
-            id="034536"
+            id={String(orderNumber)}
             text="Ваш заказ начали готовить"
             note="Дождитесь готовности на орбитальной станции"
           />
