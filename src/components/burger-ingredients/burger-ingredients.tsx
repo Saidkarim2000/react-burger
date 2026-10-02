@@ -1,9 +1,12 @@
+import { selectIngredient, clearSelectedIngredient } from '@/utils/ingredientsSlice';
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
+import type { RootState } from '@/utils/api/store';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
@@ -15,7 +18,10 @@ type TBurgerIngredientsProps = {
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
-  const [selectedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
+  const dispatch = useDispatch();
+  const selectedIngredient = useSelector(
+    (state: RootState) => state.ingredients.selectedIngredient
+  );
   const [currentTab, setCurrentTab] = useState('bun');
 
   const containerRef = useRef<HTMLElement>(null);
@@ -24,11 +30,11 @@ export const BurgerIngredients = ({
   const sauceRef = useRef<HTMLHeadingElement>(null);
 
   function handleIngredientClick(ingredient: TIngredient): void {
-    setSelectedIngredient(ingredient);
+    dispatch(selectIngredient(ingredient));
   }
 
   function handleModalClose(): void {
-    setSelectedIngredient(null);
+    dispatch(clearSelectedIngredient());
   }
 
   function handleScroll(): void {
