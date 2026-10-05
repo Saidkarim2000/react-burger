@@ -40,8 +40,7 @@ const DraggableIngredient = ({
       onClick={onClick}
     >
       <img src={ingredient.image} alt={ingredient.name} />
-
-      <Counter count={count} size="default" extraClass="" />
+      {count > 0 && <Counter count={count} size="default" extraClass="" />}
 
       <div className={styles.menu_item_price}>
         <h3 className="text text_type_main-default">{ingredient.price}</h3>

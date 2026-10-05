@@ -27,11 +27,10 @@ import styles from './burger-constructor.module.css';
 
 type TConstructorDragItem = {
   uuid: string;
-  index: number;
 };
 
 type TMoveIngredientPayload = {
-  fromIndex: number;
+  uuid: string;
   toIndex: number;
 };
 
@@ -50,25 +49,23 @@ const DropTarget = ({
     TConstructorDragItem,
     void,
     { isHover: boolean }
-  >(() => ({
-    accept: 'constructorIngredient',
+  >(
+    () => ({
+      accept: 'constructorIngredient',
 
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    drop(item) {
-      if (item.index === index) {
-        return;
-      }
+      drop(item): void {
+        onDropHandler({
+          uuid: item.uuid,
+          toIndex: index,
+        });
+      },
 
-      onDropHandler({
-        fromIndex: item.index,
-        toIndex: index,
-      });
-    },
-
-    collect: (monitor): { isHover: boolean } => ({
-      isHover: monitor.isOver(),
+      collect: (monitor): { isHover: boolean } => ({
+        isHover: monitor.isOver(),
+      }),
     }),
-  }));
+    [index, onDropHandler]
+  );
 
   return (
     <li
@@ -84,22 +81,22 @@ const DropTarget = ({
 
 type TDraggableConstcItemProps = {
   ingredient: TConstructorIngredient;
-  index: number;
 };
 
 const DraggableConstcItem = ({
   ingredient,
-  index,
 }: TDraggableConstcItemProps): React.JSX.Element => {
   const dispatch = useDispatch();
 
-  const [, dragRef] = useDrag<TConstructorDragItem>(() => ({
-    type: 'constructorIngredient',
-    item: {
-      uuid: ingredient.uuid,
-      index,
-    },
-  }));
+  const [, dragRef] = useDrag<TConstructorDragItem>(
+    () => ({
+      type: 'constructorIngredient',
+      item: {
+        uuid: ingredient.uuid,
+      },
+    }),
+    [ingredient.uuid]
+  );
 
   return (
     <div
@@ -167,7 +164,18 @@ export const BurgerConstructor = (): React.JSX.Element => {
   function handleOrderDetailsClose(): void {
     setOrderNumber(null);
   }
-  function handleMoveIngredient({ fromIndex, toIndex }: TMoveIngredientPayload): void {
+  function handleMoveIngredient({ uuid, toIndex }: TMoveIngredientPayload): void {
+    const fromIndex = ingredients.findIndex((ingredient) => ingredient.uuid === uuid);
+
+    if (
+      fromIndex === -1 ||
+      fromIndex === toIndex ||
+      toIndex < 0 ||
+      toIndex >= ingredients.length
+    ) {
+      return;
+    }
+
     dispatch(
       moveIngredient({
         fromIndex,
@@ -175,6 +183,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
       })
     );
   }
+
   return (
     <section
       ref={(node) => {
@@ -209,7 +218,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
             index={index}
             onDropHandler={handleMoveIngredient}
           >
-            <DraggableConstcItem ingredient={ingredient} index={index} />
+            <DraggableConstcItem ingredient={ingredient} />
           </DropTarget>
         ))}
       </ul>

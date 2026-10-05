@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import type { RootState } from './api/store';
+import type { TBurgerConstructorState } from './constructorSlice';
 
-const selectBurgerConstructor = (state: RootState): RootState['burgerConstructor'] =>
+const selectBurgerConstructor = (state: RootState): TBurgerConstructorState =>
   state.burgerConstructor;
 
 export const selectIngredientCounts = createSelector(
