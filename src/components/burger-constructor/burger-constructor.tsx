@@ -1,4 +1,5 @@
 import { useCreateOrderMutation } from '@/utils/api/api';
+import { addIngredient, removeIngredient } from '@/utils/constructorSlice';
 import {
   Button,
   ConstructorElement,
@@ -6,29 +7,32 @@ import {
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 
+import type { RootState } from '@/utils/api/store';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
-
-export const BurgerConstructor = ({
-  ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
-  console.log(ingredients);
+export const BurgerConstructor = (): React.JSX.Element => {
+  const dispatch = useDispatch();
+  const { bun, ingredients } = useSelector(
+    (state: RootState) => state.burgerConstructor
+  );
+  const [, dropRef] = useDrop<TIngredient>(() => ({
+    accept: 'ingredient',
+    drop: (ingredient): void => {
+      dispatch(addIngredient(ingredient));
+    },
+  }));
 
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const [createOrder, { isLoading, isError }] = useCreateOrderMutation();
-  const bun = ingredients.find((ingredient) => ingredient.type === 'bun');
-
-  const fillings = ingredients.filter((ingredient) => ingredient.type !== 'bun');
-
+  const fillings = ingredients;
   const totalPrice =
     fillings.reduce((sum, ingredient) => sum + ingredient.price, 0) +
     (bun ? bun.price * 2 : 0);
@@ -63,8 +67,13 @@ export const BurgerConstructor = ({
   }
 
   return (
-    <section className={styles.burger_constructor}>
-      {bun && (
+    <section
+      ref={(node) => {
+        dropRef(node);
+      }}
+      className={styles.burger_constructor}
+    >
+      {bun ? (
         <div className={styles.fixed_element}>
           <ConstructorElement
             type="top"
@@ -74,11 +83,19 @@ export const BurgerConstructor = ({
             thumbnail={bun.image}
           />
         </div>
+      ) : (
+        <div className={`${styles.fixed_element} ${styles.placeholder_bun_top}`}>
+          Выберите булки
+        </div>
       )}
 
       <ul className={`${styles.ingredients_list} custom-scroll`}>
-        {fillings.map((ingredient, index) => (
-          <li key={`${ingredient._id}-${index}`} className={styles.ingredient_item}>
+        {fillings.length === 0 && (
+          <li className={styles.placeholder_filling}>Выберите начинку</li>
+        )}
+
+        {fillings?.map((ingredient) => (
+          <li key={ingredient.uuid} className={styles.ingredient_item}>
             <DragIcon type="primary" />
 
             <ConstructorElement
@@ -86,14 +103,14 @@ export const BurgerConstructor = ({
               text={ingredient.name}
               thumbnail={ingredient.image}
               handleClose={() => {
-                console.log('Удалить:', ingredient.name);
+                dispatch(removeIngredient(ingredient.uuid));
               }}
             />
           </li>
         ))}
       </ul>
 
-      {bun && (
+      {bun ? (
         <div className={styles.fixed_element}>
           <ConstructorElement
             type="bottom"
@@ -102,6 +119,10 @@ export const BurgerConstructor = ({
             text={`${bun.name} (низ)`}
             thumbnail={bun.image}
           />
+        </div>
+      ) : (
+        <div className={`${styles.fixed_element} ${styles.placeholder_bun_bottom}`}>
+          Выберите булки
         </div>
       )}
 

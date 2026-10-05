@@ -11,6 +11,45 @@
   padding-left: 32px;
 }
 
+.placeholder_bun_top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  margin: 0;
+  padding: 0 24px;
+  color: var(--text-primary-color);
+  text-align: center;
+  background: #2f2f37;
+  border-radius: 40px 40px 15px 15px;
+}
+
+.placeholder_filling {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  margin: 0;
+  padding: 0 24px;
+  color: var(--text-primary-color);
+  text-align: center;
+  background: #2f2f37;
+  border-radius: 40px;
+}
+
+.placeholder_bun_bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  margin: 0;
+  padding: 0 24px;
+  color: var(--text-primary-color);
+  text-align: center;
+  background: #2f2f37;
+  border-radius: 15px 15px 40px 40px;
+}
+
 .ingredients_list {
   display: flex;
   flex-direction: column;

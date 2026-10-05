@@ -30,7 +30,7 @@ export const App = (): React.JSX.Element => {
         <DndProvider backend={HTML5Backend}>
           <main className={`${styles.main} pl-5 pr-5`}>
             <BurgerIngredients ingredients={ingredients} />
-            <BurgerConstructor ingredients={[]} />
+            <BurgerConstructor />
           </main>
         </DndProvider>
       </div>

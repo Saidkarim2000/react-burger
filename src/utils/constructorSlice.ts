@@ -56,6 +56,8 @@ const burgerConstructorSlice = createSlice({
   },
 });
 
+export type { TConstructorIngredient };
+
 export const { addIngredient, removeIngredient, moveIngredient } =
   burgerConstructorSlice.actions;
 
