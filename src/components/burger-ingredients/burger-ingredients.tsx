@@ -1,6 +1,7 @@
 import { selectIngredient, clearSelectedIngredient } from '@/utils/ingredientsSlice';
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useRef } from 'react';
+import { useDrag } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import IngredientDetails from '../ingredient-details/ingredient-details';
@@ -10,6 +11,43 @@ import type { RootState } from '@/utils/api/store';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
+
+type TDraggableIngredientProps = {
+  ingredient: TIngredient;
+  onClick: () => void;
+};
+const DraggableIngredient = ({
+  ingredient,
+  onClick,
+}: TDraggableIngredientProps): React.JSX.Element => {
+  const [, dragRef] = useDrag<TIngredient>(() => ({
+    type: 'ingredient',
+    item: ingredient,
+    collect: (monitor): { isDragging: boolean } => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <li
+      ref={(node) => {
+        dragRef(node);
+      }}
+      onClick={onClick}
+    >
+      <img src={ingredient.image} alt={ingredient.name} />
+
+      <Counter count={1} size="default" extraClass="" />
+
+      <div className={styles.menu_item_price}>
+        <h3 className="text text_type_main-default">{ingredient.price}</h3>
+        <CurrencyIcon type="primary" />
+      </div>
+
+      <span>{ingredient.name}</span>
+    </li>
+  );
+};
 
 type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
@@ -127,15 +165,11 @@ export const BurgerIngredients = ({
             </h2>
             <ul className={styles.menu_section_block}>
               {buns.map((bun) => (
-                <li key={bun._id} onClick={() => handleIngredientClick(bun)}>
-                  <img src={bun.image} alt={bun.name} />
-                  <Counter count={1} size="default" extraClass="" />
-                  <div className={styles.menu_item_price}>
-                    <h3 className="text text_type_main-default">{bun.price}</h3>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <span>{bun.name}</span>
-                </li>
+                <DraggableIngredient
+                  key={bun._id}
+                  ingredient={bun}
+                  onClick={() => handleIngredientClick(bun)}
+                />
               ))}
             </ul>
           </div>
@@ -146,15 +180,11 @@ export const BurgerIngredients = ({
             </h2>
             <ul className={styles.menu_section_block}>
               {mains.map((main) => (
-                <li key={main._id} onClick={() => handleIngredientClick(main)}>
-                  <img src={main.image} alt={main.name} />
-                  <Counter count={1} size="default" extraClass="" />
-                  <div className={styles.menu_item_price}>
-                    <h3 className="text text_type_main-default">{main.price}</h3>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <span>{main.name}</span>
-                </li>
+                <DraggableIngredient
+                  key={main._id}
+                  ingredient={main}
+                  onClick={() => handleIngredientClick(main)}
+                />
               ))}
             </ul>
           </div>
@@ -165,15 +195,11 @@ export const BurgerIngredients = ({
             </h2>
             <ul className={styles.menu_section_block}>
               {sauces.map((sauce) => (
-                <li key={sauce._id} onClick={() => handleIngredientClick(sauce)}>
-                  <img src={sauce.image} alt={sauce.name} />
-                  <Counter count={1} size="default" extraClass="" />
-                  <div className={styles.menu_item_price}>
-                    <h3 className="text text_type_main-default">{sauce.price}</h3>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <span>{sauce.name}</span>
-                </li>
+                <DraggableIngredient
+                  key={sauce._id}
+                  ingredient={sauce}
+                  onClick={() => handleIngredientClick(sauce)}
+                />
               ))}
             </ul>
           </div>
