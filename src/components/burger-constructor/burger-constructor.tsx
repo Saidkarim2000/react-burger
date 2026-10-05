@@ -1,5 +1,9 @@
 import { useCreateOrderMutation } from '@/utils/api/api';
-import { addIngredient, removeIngredient } from '@/utils/constructorSlice';
+import {
+  addIngredient,
+  removeIngredient,
+  moveIngredient,
+} from '@/utils/constructorSlice';
 import {
   Button,
   ConstructorElement,
@@ -7,16 +11,116 @@ import {
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useDrop } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { selectBurgerTotalPrice } from '@utils/selectors';
 
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 
 import type { RootState } from '@/utils/api/store';
+import type { TConstructorIngredient } from '@/utils/constructorSlice';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
+
+type TConstructorDragItem = {
+  uuid: string;
+  index: number;
+};
+
+type TMoveIngredientPayload = {
+  fromIndex: number;
+  toIndex: number;
+};
+
+type TDropTargetProps = {
+  children: React.ReactNode;
+  index: number;
+  onDropHandler: (payload: TMoveIngredientPayload) => void;
+};
+
+const DropTarget = ({
+  children,
+  index,
+  onDropHandler,
+}: TDropTargetProps): React.JSX.Element => {
+  const [{ isHover }, dropTarget] = useDrop<
+    TConstructorDragItem,
+    void,
+    { isHover: boolean }
+  >(() => ({
+    accept: 'constructorIngredient',
+
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    drop(item) {
+      if (item.index === index) {
+        return;
+      }
+
+      onDropHandler({
+        fromIndex: item.index,
+        toIndex: index,
+      });
+    },
+
+    collect: (monitor): { isHover: boolean } => ({
+      isHover: monitor.isOver(),
+    }),
+  }));
+
+  return (
+    <li
+      ref={(node) => {
+        dropTarget(node);
+      }}
+      className={isHover ? styles.ingredient_item_hover : styles.ingredient_item}
+    >
+      {children}
+    </li>
+  );
+};
+
+type TDraggableConstcItemProps = {
+  ingredient: TConstructorIngredient;
+  index: number;
+};
+
+const DraggableConstcItem = ({
+  ingredient,
+  index,
+}: TDraggableConstcItemProps): React.JSX.Element => {
+  const dispatch = useDispatch();
+
+  const [, dragRef] = useDrag<TConstructorDragItem>(() => ({
+    type: 'constructorIngredient',
+    item: {
+      uuid: ingredient.uuid,
+      index,
+    },
+  }));
+
+  return (
+    <div
+      ref={(node) => {
+        dragRef(node);
+      }}
+      className={styles.ingredient_item}
+    >
+      <DragIcon type="primary" />
+
+      <ConstructorElement
+        price={ingredient.price}
+        text={ingredient.name}
+        thumbnail={ingredient.image}
+        handleClose={() => {
+          dispatch(removeIngredient(ingredient.uuid));
+        }}
+      />
+    </div>
+  );
+};
 
 export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -33,9 +137,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const [createOrder, { isLoading, isError }] = useCreateOrderMutation();
   const fillings = ingredients;
-  const totalPrice =
-    fillings.reduce((sum, ingredient) => sum + ingredient.price, 0) +
-    (bun ? bun.price * 2 : 0);
+  const totalPrice = useSelector(selectBurgerTotalPrice);
 
   async function handleOrderDetails(): Promise<void> {
     if (!bun || isLoading) {
@@ -65,7 +167,14 @@ export const BurgerConstructor = (): React.JSX.Element => {
   function handleOrderDetailsClose(): void {
     setOrderNumber(null);
   }
-
+  function handleMoveIngredient({ fromIndex, toIndex }: TMoveIngredientPayload): void {
+    dispatch(
+      moveIngredient({
+        fromIndex,
+        toIndex,
+      })
+    );
+  }
   return (
     <section
       ref={(node) => {
@@ -94,19 +203,14 @@ export const BurgerConstructor = (): React.JSX.Element => {
           <li className={styles.placeholder_filling}>Выберите начинку</li>
         )}
 
-        {fillings?.map((ingredient) => (
-          <li key={ingredient.uuid} className={styles.ingredient_item}>
-            <DragIcon type="primary" />
-
-            <ConstructorElement
-              price={ingredient.price}
-              text={ingredient.name}
-              thumbnail={ingredient.image}
-              handleClose={() => {
-                dispatch(removeIngredient(ingredient.uuid));
-              }}
-            />
-          </li>
+        {fillings.map((ingredient, index) => (
+          <DropTarget
+            key={ingredient.uuid}
+            index={index}
+            onDropHandler={handleMoveIngredient}
+          >
+            <DraggableConstcItem ingredient={ingredient} index={index} />
+          </DropTarget>
         ))}
       </ul>
 

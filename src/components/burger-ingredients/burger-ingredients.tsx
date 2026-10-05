@@ -4,6 +4,8 @@ import { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectIngredientCounts } from '@utils/selectors';
+
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
@@ -14,10 +16,12 @@ import styles from './burger-ingredients.module.css';
 
 type TDraggableIngredientProps = {
   ingredient: TIngredient;
+  count: number;
   onClick: () => void;
 };
 const DraggableIngredient = ({
   ingredient,
+  count,
   onClick,
 }: TDraggableIngredientProps): React.JSX.Element => {
   const [, dragRef] = useDrag<TIngredient>(() => ({
@@ -37,7 +41,7 @@ const DraggableIngredient = ({
     >
       <img src={ingredient.image} alt={ingredient.name} />
 
-      <Counter count={1} size="default" extraClass="" />
+      <Counter count={count} size="default" extraClass="" />
 
       <div className={styles.menu_item_price}>
         <h3 className="text text_type_main-default">{ingredient.price}</h3>
@@ -60,6 +64,7 @@ export const BurgerIngredients = ({
   const selectedIngredient = useSelector(
     (state: RootState) => state.ingredients.selectedIngredient
   );
+  const ingredientCounts = useSelector(selectIngredientCounts);
   const [currentTab, setCurrentTab] = useState('bun');
 
   const containerRef = useRef<HTMLElement>(null);
@@ -167,6 +172,7 @@ export const BurgerIngredients = ({
               {buns.map((bun) => (
                 <DraggableIngredient
                   key={bun._id}
+                  count={ingredientCounts[bun._id] ?? 0}
                   ingredient={bun}
                   onClick={() => handleIngredientClick(bun)}
                 />
@@ -182,6 +188,7 @@ export const BurgerIngredients = ({
               {mains.map((main) => (
                 <DraggableIngredient
                   key={main._id}
+                  count={ingredientCounts[main._id] ?? 0}
                   ingredient={main}
                   onClick={() => handleIngredientClick(main)}
                 />
@@ -197,6 +204,7 @@ export const BurgerIngredients = ({
               {sauces.map((sauce) => (
                 <DraggableIngredient
                   key={sauce._id}
+                  count={ingredientCounts[sauce._id] ?? 0}
                   ingredient={sauce}
                   onClick={() => handleIngredientClick(sauce)}
                 />
