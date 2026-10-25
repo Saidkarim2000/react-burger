@@ -4,6 +4,7 @@ import { useGetIngredientsQuery } from '@/utils/api/api';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Outlet } from 'react-router-dom';
 
 import styles from './homePage.module.css';
 
@@ -30,6 +31,8 @@ export default function HomePage(): React.JSX.Element {
           <BurgerConstructor />
         </main>
       </DndProvider>
+
+      <Outlet />
     </>
   );
 }

@@ -1,15 +1,11 @@
-import { selectIngredient, clearSelectedIngredient } from '@/utils/ingredientsSlice';
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { selectIngredientCounts } from '@utils/selectors';
 
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import Modal from '../modal/modal';
-
-import type { RootState } from '@/utils/api/store';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
@@ -59,10 +55,7 @@ type TBurgerIngredientsProps = {
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const selectedIngredient = useSelector(
-    (state: RootState) => state.ingredients.selectedIngredient
-  );
+  const navigate = useNavigate();
   const ingredientCounts = useSelector(selectIngredientCounts);
   const [currentTab, setCurrentTab] = useState('bun');
 
@@ -72,11 +65,8 @@ export const BurgerIngredients = ({
   const sauceRef = useRef<HTMLHeadingElement>(null);
 
   function handleIngredientClick(ingredient: TIngredient): void {
-    dispatch(selectIngredient(ingredient));
-  }
-
-  function handleModalClose(): void {
-    dispatch(clearSelectedIngredient());
+    // dispatch(selectIngredient(ingredient));
+    void navigate(`/ingredients/${ingredient._id}`);
   }
 
   function handleTabClick(tab: 'bun' | 'main' | 'sauce'): void {
@@ -212,12 +202,6 @@ export const BurgerIngredients = ({
           </div>
         </main>
       </section>
-
-      {selectedIngredient && (
-        <Modal header="Детали ингредиента" onClose={handleModalClose}>
-          <IngredientDetails props={selectedIngredient} />
-        </Modal>
-      )}
     </>
   );
 };
