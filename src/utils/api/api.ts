@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { API } from './client';
+import { baseQueryWithRefresh } from './baseQueryWithRefresh';
 
 import type { TIngredient } from '../types';
 
@@ -38,11 +38,19 @@ type TAuthResponse = {
   refreshToken: string;
 };
 
+type TLoginRequest = {
+  email: string;
+  password: string;
+};
+
+type TLogoutResponse = {
+  success: boolean;
+  message: string;
+};
+
 export const burgerIngredientsApi = createApi({
   reducerPath: 'burgerIngredientsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API.url,
-  }),
+  baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getIngredients: builder.query<TIngredient[], void>({
       query: () => ({
@@ -64,8 +72,29 @@ export const burgerIngredientsApi = createApi({
         body: formData,
       }),
     }),
+    login: builder.mutation<TAuthResponse, TLoginRequest>({
+      query: (formData) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+    logout: builder.mutation<TLogoutResponse, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+        body: {
+          token: localStorage.getItem('refreshToken'),
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetIngredientsQuery, useCreateOrderMutation, useRegisterMutation } =
-  burgerIngredientsApi;
+export const {
+  useGetIngredientsQuery,
+  useCreateOrderMutation,
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+} = burgerIngredientsApi;

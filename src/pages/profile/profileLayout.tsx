@@ -1,8 +1,30 @@
+import { burgerIngredientsApi, useLogoutMutation } from '@/utils/api/api';
+import { useDispatch } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 
 import styles from './profile.module.css';
 
 export default function ProfileLayout(): React.JSX.Element {
+  const dispatch = useDispatch();
+  const [logout, { isLoading, isError }] = useLogoutMutation();
+  async function handleLogout(): Promise<void> {
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      const response = await logout().unwrap();
+
+      if (response.success) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        dispatch(burgerIngredientsApi.util.resetApiState());
+      }
+    } catch {
+      // isError.
+    }
+  }
   return (
     <main className={styles.page}>
       <aside className={styles.sidebar}>
@@ -29,12 +51,23 @@ export default function ProfileLayout(): React.JSX.Element {
           >
             История заказов
           </NavLink>
-
+          {isError && (
+            <p
+              role="alert"
+              className="text text_type_main-default text_color_inactive mt-4"
+            >
+              Не удалось выйти из аккаунта. Попробуйте снова.
+            </p>
+          )}
           <button
             type="button"
             className={`${styles.menuItem} text text_type_main-medium`}
+            onClick={() => {
+              void handleLogout();
+            }}
+            disabled={isLoading}
           >
-            Выход
+            {isLoading ? 'Выход...' : 'Выход'}
           </button>
         </nav>
 

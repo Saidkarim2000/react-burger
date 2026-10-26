@@ -1,3 +1,4 @@
+import { useLoginMutation } from '@/utils/api/api';
 import {
   Button,
   EmailInput,
@@ -12,12 +13,34 @@ export default function LoginPage(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [login, { isLoading, isError, isSuccess }] = useLoginMutation();
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      const response = await login({
+        email,
+        password,
+      }).unwrap();
+
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+    } catch {
+      // isError
+    }
+  }
+
   return (
     <main className={styles.page}>
       <form
         className={styles.form}
         onSubmit={(event) => {
-          event.preventDefault();
+          void handleSubmit(event);
         }}
       >
         <h1 className="text text_type_main-medium">Вход</h1>
@@ -40,8 +63,18 @@ export default function LoginPage(): React.JSX.Element {
           }}
         />
 
-        <Button htmlType="submit" type="primary" size="medium">
-          Войти
+        {isError && (
+          <p role="alert" className="text text_type_main-default text_color_inactive">
+            Не удалось войти. Проверьте e-mail, пароль и подключение к сети.
+          </p>
+        )}
+
+        {isSuccess && (
+          <p className="text text_type_main-default">Вход выполнен успешно.</p>
+        )}
+
+        <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
+          {isLoading ? 'Вход...' : 'Войти'}
         </Button>
       </form>
 
