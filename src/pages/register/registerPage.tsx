@@ -1,3 +1,4 @@
+import { useRegisterMutation } from '@/utils/api/api';
 import {
   Button,
   EmailInput,
@@ -15,13 +16,34 @@ export default function RegisterPage(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [register, { isLoading, isError, isSuccess }] = useRegisterMutation();
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      const response = await register({
+        name,
+        email,
+        password,
+      }).unwrap();
+
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+    } catch {
+      // isError
+    }
+  }
   return (
     <main className={styles.page}>
       <form
         className={styles.form}
         onSubmit={(event) => {
-          event.preventDefault();
+          void handleSubmit(event);
         }}
       >
         <h1 className="text text_type_main-medium">Регистарция</h1>
@@ -54,8 +76,18 @@ export default function RegisterPage(): React.JSX.Element {
           }}
         />
 
-        <Button htmlType="submit" type="primary" size="medium">
-          Зарегистрироваться
+        {isError && (
+          <p role="alert" className="text text_type_main-default text_color_inactive">
+            Не удалось зарегистрироваться. Проверьте данные и попробуйте снова.
+          </p>
+        )}
+
+        {isSuccess && (
+          <p className="text text_type_main-default">Регистрация прошла успешно.</p>
+        )}
+
+        <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
+          {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
         </Button>
       </form>
 

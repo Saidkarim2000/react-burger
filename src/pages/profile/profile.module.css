@@ -12,6 +12,10 @@
   width: 320px;
 }
 
+.link_active {
+  color: var(--text-primary-color);
+}
+
 .menu {
   display: flex;
   flex-direction: column;

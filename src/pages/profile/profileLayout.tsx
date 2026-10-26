@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 import styles from './profile.module.css';
 
@@ -7,19 +7,28 @@ export default function ProfileLayout(): React.JSX.Element {
     <main className={styles.page}>
       <aside className={styles.sidebar}>
         <nav className={styles.menu}>
-          <Link
+          <NavLink
             to="/profile"
-            className={`${styles.menuItem} text text_type_main-medium`}
+            end
+            className={({ isActive }) =>
+              `${styles.menuItem} text text_type_main-medium ${
+                isActive ? styles.link_active : ''
+              }`
+            }
           >
             Профиль
-          </Link>
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/profile/orders"
-            className={`${styles.menuItem} text text_type_main-medium`}
+            className={({ isActive }) =>
+              `${styles.menuItem} text text_type_main-medium ${
+                isActive ? styles.link_active : ''
+              }`
+            }
           >
             История заказов
-          </Link>
+          </NavLink>
 
           <button
             type="button"

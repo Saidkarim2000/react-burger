@@ -20,6 +20,24 @@ type TCreateOrderResponse = {
   success: boolean;
 };
 
+type TUser = {
+  email: string;
+  name: string;
+};
+
+type TRegisterRequest = {
+  email: string;
+  password: string;
+  name: string;
+};
+
+type TAuthResponse = {
+  success: boolean;
+  user: TUser;
+  accessToken: string;
+  refreshToken: string;
+};
+
 export const burgerIngredientsApi = createApi({
   reducerPath: 'burgerIngredientsApi',
   baseQuery: fetchBaseQuery({
@@ -39,7 +57,15 @@ export const burgerIngredientsApi = createApi({
         body: ingredients,
       }),
     }),
+    register: builder.mutation<TAuthResponse, TRegisterRequest>({
+      query: (formData) => ({
+        url: '/auth/register',
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   }),
 });
 
-export const { useGetIngredientsQuery, useCreateOrderMutation } = burgerIngredientsApi;
+export const { useGetIngredientsQuery, useCreateOrderMutation, useRegisterMutation } =
+  burgerIngredientsApi;
