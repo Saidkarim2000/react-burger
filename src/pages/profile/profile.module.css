@@ -7,6 +7,12 @@
   margin: 120px auto 40px;
 }
 
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .sidebar {
   flex-shrink: 0;
   width: 320px;

@@ -26,16 +26,9 @@ export default function RegisterPage(): React.JSX.Element {
     }
 
     try {
-      const response = await register({
-        name,
-        email,
-        password,
-      }).unwrap();
-
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
+      await register({ name, email, password }).unwrap();
     } catch {
-      // isError
+      // isError.
     }
   }
   return (

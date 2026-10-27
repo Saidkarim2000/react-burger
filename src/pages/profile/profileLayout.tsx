@@ -6,23 +6,18 @@ import styles from './profile.module.css';
 
 export default function ProfileLayout(): React.JSX.Element {
   const dispatch = useDispatch();
-  const [logout, { isLoading, isError }] = useLogoutMutation();
+  const [logout, { isLoading, isError, isSuccess }] = useLogoutMutation();
   async function handleLogout(): Promise<void> {
     if (isLoading) {
       return;
     }
 
     try {
-      const response = await logout().unwrap();
+      await logout().unwrap();
 
-      if (response.success) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-
-        dispatch(burgerIngredientsApi.util.resetApiState());
-      }
+      dispatch(burgerIngredientsApi.util.resetApiState());
     } catch {
-      // isError.
+      // isError
     }
   }
   return (
@@ -58,6 +53,9 @@ export default function ProfileLayout(): React.JSX.Element {
             >
               Не удалось выйти из аккаунта. Попробуйте снова.
             </p>
+          )}
+          {isSuccess && (
+            <p className="text text_type_main-default">Выход из аккаунта успешен.</p>
           )}
           <button
             type="button"

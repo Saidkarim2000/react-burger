@@ -23,15 +23,9 @@ export default function LoginPage(): React.JSX.Element {
     }
 
     try {
-      const response = await login({
-        email,
-        password,
-      }).unwrap();
-
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
+      await login({ email, password }).unwrap();
     } catch {
-      // isError
+      // isError.
     }
   }
 

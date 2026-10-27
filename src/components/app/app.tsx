@@ -1,3 +1,4 @@
+import ProtectedRoute from '@/components/protected-route/protected-route';
 import FeedPage from '@/pages/feed/feedPage';
 import ForgotPasswordPage from '@/pages/forgot-password/forgotPasswordPage';
 import HomePage from '@/pages/home/homePage';
@@ -10,6 +11,10 @@ import ProfileOrderPage from '@/pages/profile/profileOrderPage';
 import ProfilePage from '@/pages/profile/profilePage';
 import RegisterPage from '@/pages/register/registerPage';
 import ResetPasswordPage from '@/pages/reset-password/resetPasswordPage';
+import { useLazyGetUserQuery } from '@/utils/api/api';
+import { setIsAuthChecked, setUser } from '@/utils/userSlice';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -29,23 +34,23 @@ const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <LoginPage />,
+        element: <ProtectedRoute onlyUnAuth component={<LoginPage />} />,
       },
       {
         path: 'register',
-        element: <RegisterPage />,
+        element: <ProtectedRoute onlyUnAuth component={<RegisterPage />} />,
       },
       {
         path: 'forgot-password',
-        element: <ForgotPasswordPage />,
+        element: <ProtectedRoute onlyUnAuth component={<ForgotPasswordPage />} />,
       },
       {
         path: 'reset-password',
-        element: <ResetPasswordPage />,
+        element: <ProtectedRoute onlyUnAuth component={<ResetPasswordPage />} />,
       },
       {
         path: 'profile',
-        element: <ProfileLayout />,
+        element: <ProtectedRoute component={<ProfileLayout />} />,
         children: [
           {
             index: true,
@@ -70,6 +75,31 @@ const router = createBrowserRouter([
 ]);
 
 export const App = (): React.JSX.Element => {
+  const dispatch = useDispatch();
+  const [getUser] = useLazyGetUserQuery();
+
+  useEffect(() => {
+    async function checkUserAuth(): Promise<void> {
+      try {
+        const hasToken =
+          localStorage.getItem('accessToken') ?? localStorage.getItem('refreshToken');
+
+        if (!hasToken) {
+          dispatch(setUser(null));
+          return;
+        }
+
+        await getUser().unwrap();
+      } catch {
+        dispatch(setUser(null));
+      } finally {
+        dispatch(setIsAuthChecked(true));
+      }
+    }
+
+    void checkUserAuth();
+  }, [dispatch, getUser]);
+
   return <RouterProvider router={router} />;
 };
 
