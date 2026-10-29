@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { selectIngredientCounts } from '@utils/selectors';
+import { selectIngredients, selectIngredientCounts } from '@utils/selectors';
 
 import type { TIngredient } from '@utils/types';
 
@@ -48,13 +48,9 @@ const DraggableIngredient = ({
   );
 };
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
+export const BurgerIngredients = (): React.JSX.Element => {
+  const ingredients = useSelector(selectIngredients);
 
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
   const navigate = useNavigate();
   const ingredientCounts = useSelector(selectIngredientCounts);
   const [currentTab, setCurrentTab] = useState('bun');

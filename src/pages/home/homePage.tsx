@@ -9,7 +9,7 @@ import { Outlet } from 'react-router-dom';
 import styles from './homePage.module.css';
 
 export default function HomePage(): React.JSX.Element {
-  const { data: ingredients = [], isLoading, isError } = useGetIngredientsQuery();
+  const { isLoading, isError } = useGetIngredientsQuery();
 
   if (isLoading) {
     return <Preloader />;
@@ -27,7 +27,7 @@ export default function HomePage(): React.JSX.Element {
 
       <DndProvider backend={HTML5Backend}>
         <main className={`${styles.main} pl-5 pr-5`}>
-          <BurgerIngredients ingredients={ingredients} />
+          <BurgerIngredients />
           <BurgerConstructor />
         </main>
       </DndProvider>
