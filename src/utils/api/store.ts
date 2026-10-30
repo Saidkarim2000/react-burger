@@ -2,12 +2,14 @@ import { combineSlices, configureStore as createStore } from '@reduxjs/toolkit';
 
 import burgerConstructorSlice from '../constructorSlice';
 import ingredientsSlice from '../ingredientsSlice';
+import userSlice from '../userSlice';
 import { burgerIngredientsApi } from './api';
 
 const rootReducer = combineSlices(
   burgerIngredientsApi,
   ingredientsSlice,
-  burgerConstructorSlice
+  burgerConstructorSlice,
+  userSlice
 );
 
 export const configureStore = (): ReturnType<typeof createStore> => {

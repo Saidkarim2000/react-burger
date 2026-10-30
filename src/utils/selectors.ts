@@ -1,7 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit';
 
+import { burgerIngredientsApi } from './api/api';
+
 import type { RootState } from './api/store';
 import type { TBurgerConstructorState } from './constructorSlice';
+
+const selectIngredientsQuery = burgerIngredientsApi.endpoints.getIngredients.select();
+
+export const selectIngredients = createSelector(
+  [selectIngredientsQuery],
+  (ingredientsQuery) => ingredientsQuery.data ?? []
+);
 
 const selectBurgerConstructor = (state: RootState): TBurgerConstructorState =>
   state.burgerConstructor;

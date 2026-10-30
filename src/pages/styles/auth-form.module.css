@@ -1,0 +1,25 @@
+.page {
+  width: 480px;
+  max-width: calc(100% - 32px);
+  margin: 180px auto 40px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 80px;
+}
+
+.link {
+  color: var(--colors-interface-accent);
+  text-decoration: none;
+}

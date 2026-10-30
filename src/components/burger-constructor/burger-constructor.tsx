@@ -4,6 +4,7 @@ import {
   removeIngredient,
   moveIngredient,
 } from '@/utils/constructorSlice';
+import { selectIsAuthChecked, selectUser } from '@/utils/userSlice';
 import {
   Button,
   ConstructorElement,
@@ -13,6 +14,7 @@ import {
 import { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { selectBurgerTotalPrice } from '@utils/selectors';
 
@@ -136,8 +138,18 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const fillings = ingredients;
   const totalPrice = useSelector(selectBurgerTotalPrice);
 
+  const user = useSelector(selectUser);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   async function handleOrderDetails(): Promise<void> {
-    if (!bun || isLoading) {
+    if (!bun || isLoading || !isAuthChecked) {
+      return;
+    }
+
+    if (!user) {
+      void navigate('/login', { state: { from: location } });
       return;
     }
 
@@ -153,7 +165,6 @@ export const BurgerConstructor = (): React.JSX.Element => {
       const response = await createOrder({
         ingredients: ingredientIds,
       }).unwrap();
-      console.log('response: \n', response);
 
       setOrderNumber(response.order.number);
     } catch (err) {
