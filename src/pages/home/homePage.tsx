@@ -16,7 +16,7 @@ export default function HomePage(): React.JSX.Element {
   }
 
   if (isError) {
-    return <div>Ошибка при получении данных </div>;
+    return <div>Ошибка при получении данных. </div>;
   }
 
   return (
