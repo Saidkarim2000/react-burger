@@ -1,8 +1,11 @@
+import FeedStatistics from '@/components/feed-statistics/feed-statistics';
 import OrderCard from '@/components/order-card/order-card';
 import { useGetIngredientsQuery } from '@/utils/api/api';
 import { useGetPublicFeedQuery } from '@/utils/api/ordersApi';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo } from 'react';
+
+import styles from './feedPage.module.css';
 
 export default function FeedPage(): React.JSX.Element {
   const { data: ingredients, isError: isIngredientsError } = useGetIngredientsQuery();
@@ -28,21 +31,42 @@ export default function FeedPage(): React.JSX.Element {
     return <Preloader />;
   }
 
+  const visibleOrders = feed.orders.filter((order) =>
+    order.ingredients.every((id) => ingredientsById.has(id))
+  );
+
   return (
-    <main className="pl-5 pr-5">
-      <h1 className="text text_type_main-large mt-10 mb-5">Лента заказов</h1>
+    <main className={styles.page}>
+      <h1 className="text text_type_main-large mb-5">Лента заказов</h1>
 
-      {feedState?.error && <p role="alert">{feedState.error}</p>}
-
-      {feed.orders.length === 0 && (
-        <p className="text text_type_main-default">Заказов пока нет.</p>
+      {feedState?.error && (
+        <p role="alert" className="text text_type_main-default mb-4">
+          {feedState.error}
+        </p>
       )}
 
-      {feed.orders.map((order) => (
-        <div key={order._id} className="mb-4">
-          <OrderCard order={order} ingredientsById={ingredientsById} />
-        </div>
-      ))}
+      <div className={styles.columns}>
+        <section
+          aria-label="Список заказов"
+          className={`${styles.orders} custom-scroll`}
+        >
+          {visibleOrders.length === 0 && (
+            <p className="text text_type_main-default">
+              Пока нет заказов для отображения.
+            </p>
+          )}
+
+          {visibleOrders.map((order) => (
+            <OrderCard key={order._id} order={order} ingredientsById={ingredientsById} />
+          ))}
+        </section>
+
+        <FeedStatistics
+          orders={visibleOrders}
+          total={feed.total}
+          totalToday={feed.totalToday}
+        />
+      </div>
     </main>
   );
 }
