@@ -2,6 +2,7 @@ import { useCreateOrderMutation } from '@/utils/api/api';
 import {
   addIngredient,
   removeIngredient,
+  clearOrderedIngredients,
   moveIngredient,
 } from '@/utils/constructorSlice';
 import { selectIsAuthChecked, selectUser } from '@/utils/userSlice';
@@ -164,6 +165,12 @@ export const BurgerConstructor = (): React.JSX.Element => {
       }).unwrap();
 
       setOrderNumber(response.order.number);
+      dispatch(
+        clearOrderedIngredients({
+          bunUuid: bun.uuid,
+          ingredientUuids: fillings.map((ingredient) => ingredient.uuid),
+        })
+      );
     } catch (err) {
       console.error('Ошибка при создании заказа: ', err);
     }

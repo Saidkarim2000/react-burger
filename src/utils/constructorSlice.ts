@@ -44,6 +44,23 @@ const burgerConstructorSlice = createSlice({
       );
     },
 
+    clearOrderedIngredients(
+      state,
+      action: PayloadAction<{ bunUuid: string; ingredientUuids: string[] }>
+    ) {
+      const { bunUuid, ingredientUuids } = action.payload;
+
+      if (state.bun?.uuid === bunUuid) {
+        state.bun = null;
+      }
+
+      const orderedUuids = new Set(ingredientUuids);
+
+      state.ingredients = state.ingredients.filter(
+        (ingredient) => !orderedUuids.has(ingredient.uuid)
+      );
+    },
+
     moveIngredient(
       state: TBurgerConstructorState,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>
@@ -69,7 +86,11 @@ const burgerConstructorSlice = createSlice({
   },
 });
 
-export const { addIngredient, removeIngredient, moveIngredient } =
-  burgerConstructorSlice.actions;
+export const {
+  addIngredient,
+  removeIngredient,
+  clearOrderedIngredients,
+  moveIngredient,
+} = burgerConstructorSlice.actions;
 
 export default burgerConstructorSlice;
