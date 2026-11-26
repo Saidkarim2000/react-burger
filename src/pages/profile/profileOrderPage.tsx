@@ -4,6 +4,7 @@ import { useGetUserFeedQuery } from '@/utils/api/ordersApi';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
 
 import type { RootState } from '@/utils/api/store';
 
@@ -35,22 +36,27 @@ export default function ProfileOrderPage(): React.JSX.Element {
     .filter((order) => order.ingredients.every((id) => ingredientsById.has(id)))
     .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
 
-  if (visibleOrders.length === 0) {
-    return (
-      <p className="text text_type_main-default">Пока нет заказов для отображения.</p>
-    );
-  }
-
   return (
-    <section aria-label="История заказов" className={`${styles.orders} custom-scroll`}>
-      {visibleOrders.map((order) => (
-        <OrderCard
-          key={order._id}
-          order={order}
-          ingredientsById={ingredientsById}
-          showStatus
-        />
-      ))}
-    </section>
+    <>
+      {visibleOrders.length === 0 ? (
+        <p className="text text_type_main-default">Пока нет заказов для отображения.</p>
+      ) : (
+        <section
+          aria-label="История заказов"
+          className={`${styles.orders} custom-scroll`}
+        >
+          {visibleOrders.map((order) => (
+            <OrderCard
+              key={order._id}
+              order={order}
+              ingredientsById={ingredientsById}
+              showStatus
+            />
+          ))}
+        </section>
+      )}
+
+      <Outlet context={{ orders: feedState.feed.orders, ingredientsById }} />
+    </>
   );
 }

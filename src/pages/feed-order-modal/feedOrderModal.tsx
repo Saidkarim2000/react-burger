@@ -82,8 +82,9 @@ export default function FeedOrderModal(): React.JSX.Element {
       return;
     }
 
-    void navigate('/feed', { replace: true });
+    void navigate('..', { relative: 'route', replace: true });
   }
+
   let orderMessage = 'Загружаем заказ…';
 
   if (!isValidNumber) {
