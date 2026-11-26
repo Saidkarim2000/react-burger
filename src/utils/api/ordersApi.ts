@@ -83,18 +83,24 @@ const ordersApi = burgerIngredientsApi.injectEndpoints({
 
       keepUnusedDataFor: 0,
 
-      async onCacheEntryAdded(_arg, lifecycle) {
+      async onCacheEntryAdded(_arg, lifecycle): Promise<void> {
+        const reconnectDelay = 3000;
         let socket: WebSocket | undefined;
+        let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
+        let isUnsubscribed = false;
 
-        try {
-          await lifecycle.cacheDataLoaded;
+        function connect(): void {
+          if (isUnsubscribed) {
+            return;
+          }
 
           const url = new URL('/orders/all', API.url);
           url.protocol = 'wss:';
 
-          socket = new WebSocket(url.href);
+          const connection = new WebSocket(url.href);
+          socket = connection;
 
-          socket.onmessage = (event: MessageEvent<unknown>): void => {
+          connection.onmessage = (event: MessageEvent<unknown>): void => {
             if (typeof event.data !== 'string') {
               return;
             }
@@ -106,16 +112,31 @@ const ordersApi = burgerIngredientsApi.injectEndpoints({
             }
           };
 
-          socket.onclose = (): void => {
-            lifecycle.updateCachedData((draft) => {
-              draft.error = 'Соединение с лентой заказов прервано.';
-            });
-          };
+          connection.onclose = (): void => {
+            socket = undefined;
 
+            if (isUnsubscribed) {
+              return;
+            }
+
+            lifecycle.updateCachedData((draft) => {
+              draft.error = 'Связь с лентой потеряна. Переподключаемся…';
+            });
+
+            reconnectTimer = setTimeout(connect, reconnectDelay);
+          };
+        }
+
+        try {
+          await lifecycle.cacheDataLoaded;
+          connect();
           await lifecycle.cacheEntryRemoved;
         } catch {
-          // Подписка может исчезнуть до создания первой записи в кэше.
+          return;
         } finally {
+          isUnsubscribed = true;
+          clearTimeout(reconnectTimer);
+
           if (socket) {
             socket.onmessage = null;
             socket.onclose = null;
