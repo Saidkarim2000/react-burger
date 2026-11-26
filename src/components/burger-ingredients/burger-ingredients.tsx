@@ -1,7 +1,7 @@
+import { useAppSelector } from '@/utils/hook';
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { selectIngredients, selectIngredientCounts } from '@utils/selectors';
@@ -49,10 +49,10 @@ const DraggableIngredient = ({
 };
 
 export const BurgerIngredients = (): React.JSX.Element => {
-  const ingredients = useSelector(selectIngredients);
+  const ingredients = useAppSelector(selectIngredients);
 
   const navigate = useNavigate();
-  const ingredientCounts = useSelector(selectIngredientCounts);
+  const ingredientCounts = useAppSelector(selectIngredientCounts);
   const [currentTab, setCurrentTab] = useState('bun');
 
   const containerRef = useRef<HTMLElement>(null);

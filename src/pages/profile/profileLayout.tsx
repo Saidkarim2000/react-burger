@@ -1,11 +1,11 @@
 import { burgerIngredientsApi, useLogoutMutation } from '@/utils/api/api';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/utils/hook';
 import { NavLink, Outlet } from 'react-router-dom';
 
 import styles from './profile.module.css';
 
 export default function ProfileLayout(): React.JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [logout, { isLoading, isError, isSuccess }] = useLogoutMutation();
   async function handleLogout(): Promise<void> {
     if (isLoading) {

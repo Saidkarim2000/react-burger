@@ -1,9 +1,9 @@
 import OrderCard from '@/components/order-card/order-card';
 import { useGetIngredientsQuery } from '@/utils/api/api';
 import { useGetUserFeedQuery } from '@/utils/api/ordersApi';
+import { useAppSelector } from '@/utils/hook';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
 import type { RootState } from '@/utils/api/store';
@@ -11,7 +11,7 @@ import type { RootState } from '@/utils/api/store';
 import styles from './profileOrderPage.module.css';
 
 export default function ProfileOrderPage(): React.JSX.Element {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useAppSelector((state: RootState) => state.user.user);
   const { currentData: feedState } = useGetUserFeedQuery(user?.email ?? skipToken);
   const { data: ingredients, isError: isIngredientsError } = useGetIngredientsQuery();
 

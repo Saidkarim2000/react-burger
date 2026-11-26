@@ -13,9 +13,9 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from '@utils/hook';
 import { selectBurgerTotalPrice } from '@utils/selectors';
 
 import Modal from '../modal/modal';
@@ -88,7 +88,7 @@ type TDraggableConstcItemProps = {
 const DraggableConstcItem = ({
   ingredient,
 }: TDraggableConstcItemProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [, dragRef] = useDrag<TConstructorDragItem>(
     () => ({
@@ -122,8 +122,8 @@ const DraggableConstcItem = ({
 };
 
 export const BurgerConstructor = (): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const { bun, ingredients } = useSelector(
+  const dispatch = useAppDispatch();
+  const { bun, ingredients } = useAppSelector(
     (state: RootState) => state.burgerConstructor
   );
   const [, dropRef] = useDrop<TIngredient>(() => ({
@@ -136,10 +136,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const [createOrder, { isLoading, isError }] = useCreateOrderMutation();
   const fillings = ingredients;
-  const totalPrice = useSelector(selectBurgerTotalPrice);
+  const totalPrice = useAppSelector(selectBurgerTotalPrice);
 
-  const user = useSelector(selectUser);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useAppSelector(selectUser);
+  const isAuthChecked = useAppSelector(selectIsAuthChecked);
   const navigate = useNavigate();
   const location = useLocation();
 
