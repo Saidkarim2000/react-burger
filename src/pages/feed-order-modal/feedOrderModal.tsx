@@ -1,5 +1,6 @@
 import Modal from '@/components/modal/modal';
 import { useGetOrderByNumberQuery } from '@/utils/api/ordersApi';
+import { statusLabels } from '@/utils/orderStatus';
 import {
   CurrencyIcon,
   FormattedDate,
@@ -11,11 +12,6 @@ import type { TIngredient, TOrder } from '@/utils/types';
 
 import styles from './feedOrderModal.module.css';
 
-const statusLabels: Record<TOrder['status'], string> = {
-  created: 'Создан',
-  pending: 'Готовится',
-  done: 'Выполнен',
-};
 type TFeedOutletContext = {
   orders: readonly TOrder[];
   ingredientsById: ReadonlyMap<string, TIngredient>;

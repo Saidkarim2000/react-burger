@@ -58,6 +58,10 @@
   gap: 8px;
 }
 
+.done {
+  color: #0cc;
+}
+
 @media (width <= 600px) {
   .thumbnail {
     width: 40px;

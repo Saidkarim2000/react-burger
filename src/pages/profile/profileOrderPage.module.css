@@ -1,0 +1,13 @@
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-height: calc(100dvh - 160px);
+  padding-right: 8px;
+  overflow-y: auto;
+}
+
+.orders > * {
+  flex-shrink: 0;
+}

@@ -1,3 +1,4 @@
+import { statusLabels } from '@/utils/orderStatus';
 import {
   CurrencyIcon,
   FormattedDate,
@@ -11,6 +12,7 @@ import styles from './order-card.module.css';
 type TOrderCardProps = {
   order: TOrder;
   ingredientsById: ReadonlyMap<string, TIngredient>;
+  showStatus?: boolean;
 };
 
 const MAX_VISIBLE_INGREDIENTS = 6;
@@ -18,6 +20,7 @@ const MAX_VISIBLE_INGREDIENTS = 6;
 export default function OrderCard({
   order,
   ingredientsById,
+  showStatus = false,
 }: TOrderCardProps): React.JSX.Element | null {
   const ingredients: TIngredient[] = [];
 
@@ -53,7 +56,19 @@ export default function OrderCard({
         />
       </div>
 
-      <h2 className="text text_type_main-medium">{order.name ?? 'Бургер'}</h2>
+      <div>
+        <h2 className="text text_type_main-medium">{order.name ?? 'Бургер'}</h2>
+
+        {showStatus && (
+          <p
+            className={`text text_type_main-default mt-2 ${
+              order.status === 'done' ? styles.done : ''
+            }`}
+          >
+            {statusLabels[order.status]}
+          </p>
+        )}
+      </div>
 
       <div className={styles.row}>
         <div className={styles.ingredients}>
