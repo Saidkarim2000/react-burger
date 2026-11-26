@@ -68,7 +68,7 @@ export default function FeedPage(): React.JSX.Element {
           totalToday={feed.totalToday}
         />
       </div>
-      <Outlet context={feed.orders} />
+      <Outlet context={{ orders: feed.orders, ingredientsById }} />
     </main>
   );
 }
