@@ -1,8 +1,10 @@
 import Modal from '@/components/modal/modal';
+import { useGetOrderByNumberQuery } from '@/utils/api/ordersApi';
 import {
   CurrencyIcon,
   FormattedDate,
 } from '@krgaa/react-developer-burger-ui-components';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import type { TIngredient, TOrder } from '@/utils/types';
@@ -60,7 +62,17 @@ function getOrderComposition(
 export default function FeedOrderModal(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const { orders, ingredientsById } = useOutletContext<TFeedOutletContext>();
-  const order = orders.find((item) => String(item.number) === id);
+  const number = Number(id);
+  const isValidNumber = /^\d+$/.test(id ?? '') && Number.isSafeInteger(number);
+
+  const feedOrder = isValidNumber
+    ? orders.find((item) => item.number === number)
+    : undefined;
+
+  const { currentData: requestedOrder, isError: isOrderError } =
+    useGetOrderByNumberQuery(isValidNumber && !feedOrder ? number : skipToken);
+
+  const order = feedOrder ?? requestedOrder;
   const composition = order
     ? getOrderComposition(order.ingredients, ingredientsById)
     : null;
@@ -76,7 +88,15 @@ export default function FeedOrderModal(): React.JSX.Element {
 
     void navigate('/feed', { replace: true });
   }
+  let orderMessage = 'Загружаем заказ…';
 
+  if (!isValidNumber) {
+    orderMessage = 'Некорректный номер заказа.';
+  } else if (isOrderError) {
+    orderMessage = 'Не удалось загрузить заказ.';
+  } else if (requestedOrder === null) {
+    orderMessage = 'Заказ не найден.';
+  }
   return (
     <Modal
       header={
@@ -131,7 +151,9 @@ export default function FeedOrderModal(): React.JSX.Element {
           )}
         </>
       ) : (
-        <p className="text text_type_main-default">Заказ отсутствует в текущей ленте.</p>
+        <p className="text text_type_main-default" role="status">
+          {orderMessage}
+        </p>
       )}
     </Modal>
   );

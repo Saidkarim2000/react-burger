@@ -7,6 +7,10 @@ type TFeedState = {
   feed: TOrderFeed | null;
   error: string | null;
 };
+type TOrderByNumberResponse = {
+  success: boolean;
+  orders: TOrder[];
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -119,7 +123,22 @@ const ordersApi = burgerIngredientsApi.injectEndpoints({
         }
       },
     }),
+    getOrderByNumber: builder.query<TOrder | null, number>({
+      query: (number) => `/orders/${number}`,
+
+      transformResponse: (
+        response: TOrderByNumberResponse,
+        _meta,
+        number
+      ): TOrder | null => {
+        if (!response.success || !Array.isArray(response.orders)) {
+          throw new Error('Некорректный ответ сервера');
+        }
+
+        return response.orders.find((order) => order.number === number) ?? null;
+      },
+    }),
   }),
 });
 
-export const { useGetPublicFeedQuery } = ordersApi;
+export const { useGetPublicFeedQuery, useGetOrderByNumberQuery } = ordersApi;
