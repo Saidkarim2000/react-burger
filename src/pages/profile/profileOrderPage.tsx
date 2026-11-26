@@ -6,12 +6,10 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import type { RootState } from '@/utils/api/store';
-
 import styles from './profileOrderPage.module.css';
 
 export default function ProfileOrderPage(): React.JSX.Element {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  const user = useAppSelector((state) => state.user.user);
   const { currentData: feedState } = useGetUserFeedQuery(user?.email ?? skipToken);
   const { data: ingredients, isError: isIngredientsError } = useGetIngredientsQuery();
 

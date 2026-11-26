@@ -21,7 +21,6 @@ import { selectBurgerTotalPrice } from '@utils/selectors';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 
-import type { RootState } from '@/utils/api/store';
 import type { TConstructorIngredient } from '@/utils/constructorSlice';
 import type { TIngredient } from '@utils/types';
 
@@ -123,9 +122,7 @@ const DraggableConstcItem = ({
 
 export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
-  const { bun, ingredients } = useAppSelector(
-    (state: RootState) => state.burgerConstructor
-  );
+  const { bun, ingredients } = useAppSelector((state) => state.burgerConstructor);
   const [, dropRef] = useDrop<TIngredient>(() => ({
     accept: 'ingredient',
     drop: (ingredient): void => {

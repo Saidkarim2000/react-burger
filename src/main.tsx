@@ -4,11 +4,10 @@ import { Provider } from 'react-redux';
 
 import { App } from '@components/app/app';
 
-import { configureStore } from './utils/api/store.ts';
+import { store } from './utils/api/store.ts';
 
 import './index.css';
 
-const store = configureStore();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
