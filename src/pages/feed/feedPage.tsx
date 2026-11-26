@@ -4,6 +4,7 @@ import { useGetIngredientsQuery } from '@/utils/api/api';
 import { useGetPublicFeedQuery } from '@/utils/api/ordersApi';
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import styles from './feedPage.module.css';
 
@@ -67,6 +68,7 @@ export default function FeedPage(): React.JSX.Element {
           totalToday={feed.totalToday}
         />
       </div>
+      <Outlet />
     </main>
   );
 }

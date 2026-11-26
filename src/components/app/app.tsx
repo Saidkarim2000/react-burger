@@ -1,4 +1,5 @@
 import ProtectedRoute from '@/components/protected-route/protected-route';
+import FeedOrderModal from '@/pages/feed-order-modal/feedOrderModal';
 import FeedPage from '@/pages/feed/feedPage';
 import ForgotPasswordPage from '@/pages/forgot-password/forgotPasswordPage';
 import HomePage from '@/pages/home/homePage';
@@ -65,6 +66,12 @@ const router = createBrowserRouter([
       {
         path: 'feed',
         element: <FeedPage />,
+        children: [
+          {
+            path: ':id',
+            element: <FeedOrderModal />,
+          },
+        ],
       },
       {
         path: '*',

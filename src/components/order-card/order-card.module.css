@@ -1,0 +1,70 @@
+.card {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  background-color: var(--background);
+  border-radius: 40px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.ingredients {
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+.thumbnail {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  background-color: var(--background-alt);
+  border: 2px solid #801ab2;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.thumbnail + .thumbnail {
+  margin-left: -16px;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.more {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: rgb(28 28 33 / 75%);
+}
+
+.price {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (width <= 600px) {
+  .thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+
+  .thumbnail + .thumbnail {
+    margin-left: -12px;
+  }
+}
