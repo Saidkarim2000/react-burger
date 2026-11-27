@@ -2,12 +2,13 @@ import { useUpdateUserMutation } from '@/utils/api/api';
 import { selectUser } from '@/utils/userSlice';
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+
+import { useAppSelector } from '@utils/hook';
 
 import styles from './profile.module.css';
 
 export default function ProfilePage(): React.JSX.Element {
-  const user = useSelector(selectUser);
+  const user = useAppSelector(selectUser);
 
   const [name, setName] = useState(user?.name ?? '');
   const [email, setEmail] = useState(user?.email ?? '');

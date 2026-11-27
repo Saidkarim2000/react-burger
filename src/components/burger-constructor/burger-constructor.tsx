@@ -2,6 +2,7 @@ import { useCreateOrderMutation } from '@/utils/api/api';
 import {
   addIngredient,
   removeIngredient,
+  clearOrderedIngredients,
   moveIngredient,
 } from '@/utils/constructorSlice';
 import { selectIsAuthChecked, selectUser } from '@/utils/userSlice';
@@ -13,15 +14,14 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from '@utils/hook';
 import { selectBurgerTotalPrice } from '@utils/selectors';
 
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 
-import type { RootState } from '@/utils/api/store';
 import type { TConstructorIngredient } from '@/utils/constructorSlice';
 import type { TIngredient } from '@utils/types';
 
@@ -88,7 +88,7 @@ type TDraggableConstcItemProps = {
 const DraggableConstcItem = ({
   ingredient,
 }: TDraggableConstcItemProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [, dragRef] = useDrag<TConstructorDragItem>(
     () => ({
@@ -122,10 +122,8 @@ const DraggableConstcItem = ({
 };
 
 export const BurgerConstructor = (): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const { bun, ingredients } = useSelector(
-    (state: RootState) => state.burgerConstructor
-  );
+  const dispatch = useAppDispatch();
+  const { bun, ingredients } = useAppSelector((state) => state.burgerConstructor);
   const [, dropRef] = useDrop<TIngredient>(() => ({
     accept: 'ingredient',
     drop: (ingredient): void => {
@@ -136,10 +134,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const [createOrder, { isLoading, isError }] = useCreateOrderMutation();
   const fillings = ingredients;
-  const totalPrice = useSelector(selectBurgerTotalPrice);
+  const totalPrice = useAppSelector(selectBurgerTotalPrice);
 
-  const user = useSelector(selectUser);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useAppSelector(selectUser);
+  const isAuthChecked = useAppSelector(selectIsAuthChecked);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -167,6 +165,12 @@ export const BurgerConstructor = (): React.JSX.Element => {
       }).unwrap();
 
       setOrderNumber(response.order.number);
+      dispatch(
+        clearOrderedIngredients({
+          bunUuid: bun.uuid,
+          ingredientUuids: fillings.map((ingredient) => ingredient.uuid),
+        })
+      );
     } catch (err) {
       console.error('Ошибка при создании заказа: ', err);
     }

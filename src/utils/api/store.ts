@@ -12,13 +12,11 @@ const rootReducer = combineSlices(
   userSlice
 );
 
-export const configureStore = (): ReturnType<typeof createStore> => {
-  return createStore({
-    reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(burgerIngredientsApi.middleware);
-    },
-  });
-};
+export const store = createStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(burgerIngredientsApi.middleware),
+});
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

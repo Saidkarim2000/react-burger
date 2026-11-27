@@ -1,4 +1,5 @@
 import ProtectedRoute from '@/components/protected-route/protected-route';
+import FeedOrderModal from '@/pages/feed-order-modal/feedOrderModal';
 import FeedPage from '@/pages/feed/feedPage';
 import ForgotPasswordPage from '@/pages/forgot-password/forgotPasswordPage';
 import HomePage from '@/pages/home/homePage';
@@ -12,9 +13,9 @@ import ProfilePage from '@/pages/profile/profilePage';
 import RegisterPage from '@/pages/register/registerPage';
 import ResetPasswordPage from '@/pages/reset-password/resetPasswordPage';
 import { useLazyGetUserQuery } from '@/utils/api/api';
+import { useAppDispatch } from '@/utils/hook';
 import { setIsAuthChecked, setUser } from '@/utils/userSlice';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -59,12 +60,24 @@ const router = createBrowserRouter([
           {
             path: 'orders',
             element: <ProfileOrderPage />,
+            children: [
+              {
+                path: ':id',
+                element: <FeedOrderModal />,
+              },
+            ],
           },
         ],
       },
       {
         path: 'feed',
         element: <FeedPage />,
+        children: [
+          {
+            path: ':id',
+            element: <FeedOrderModal />,
+          },
+        ],
       },
       {
         path: '*',
@@ -75,7 +88,7 @@ const router = createBrowserRouter([
 ]);
 
 export const App = (): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [getUser] = useLazyGetUserQuery();
 
   useEffect(() => {
